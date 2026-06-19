@@ -21,5 +21,10 @@ public class ApiDetails {
 
     private String name;
     private String url;
+    private String status;
+    public Object getStatus() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getStatus'");
+    }
 
 }
