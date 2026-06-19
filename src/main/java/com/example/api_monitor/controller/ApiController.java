@@ -10,15 +10,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.api_monitor.model.ApiDetails;
 import com.example.api_monitor.repository.ApiRepository;
+import com.example.api_monitor.service.ApiService;
 @RestController
 @RequestMapping("/api")
 public class ApiController {
     
     private final ApiRepository repo;
+    private final ApiService apiService;
 
-    public ApiController(ApiRepository repo) {
+    public ApiController(ApiRepository repo, ApiService apiService) {
 
         this.repo=repo;
+        this.apiService=apiService;
     }
 
     @PostMapping("/add")
@@ -29,5 +32,9 @@ public class ApiController {
     public List<ApiDetails> getAllApis() {
         return repo.findAll();
     }
-
+    @GetMapping("/check")
+    public String checkApis() {
+        apiService.checkApis();
+        return "API check completed";
+    }
 }

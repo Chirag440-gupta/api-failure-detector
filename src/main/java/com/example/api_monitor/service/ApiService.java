@@ -29,6 +29,10 @@ public class ApiService {
         for(ApiDetails api:apis){
             String url=api.getUrl();
             System.out.println(api.getName()+"->"+ url);
+            if(url==null || url.isBlank()){
+                System.out.println("Ivalid URL");
+                continue;
+            }
             URI uri=URI.create(url);
 
             HttpRequest request=HttpRequest.newBuilder().uri(uri).build();
