@@ -26,8 +26,11 @@ public class ApiController {
 
     @PostMapping("/add")
     public ApiDetails addApi(@RequestBody ApiDetails api) {
+        api.setStatus("PENDING");
+        api.setResponseTime(0L);
         return repo.save(api);
     }
+
     @GetMapping("/all") 
     public List<ApiDetails> getAllApis() {
         return repo.findAll();

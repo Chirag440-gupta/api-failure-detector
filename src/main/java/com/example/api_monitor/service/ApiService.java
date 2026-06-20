@@ -36,9 +36,14 @@ public class ApiService {
             URI uri=URI.create(url);
 
             HttpRequest request=HttpRequest.newBuilder().uri(uri).build();
+            long start=System.currentTimeMillis();
             try{
               HttpResponse<Void> response=client.send(request, HttpResponse.BodyHandlers.discarding()) ;
-                int statusCode=response.statusCode();
+              long end=System.currentTimeMillis();
+              long responseTime=end-start;
+              System.out.println("Response Time For "+ api.getName()+" -> "+ responseTime+"ms");
+              api.setResponseTime(responseTime);
+              int statusCode=response.statusCode();
                 if(statusCode==200){
                     api.setStatus("UP");
                 }else {
@@ -46,7 +51,7 @@ public class ApiService {
                 }
                 repo.save(api);
               
-               System.out.println("Staus Code For"+ api.getName()+"->"+statusCode);
+               System.out.println("Staus Code For "+ api.getName()+" -> "+statusCode);
             }catch(Exception e){
                 api.setStatus("DOWN");
                 repo.save(api);
