@@ -4,8 +4,10 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.example.api_monitor.model.ApiDetails;
@@ -23,7 +25,9 @@ public class ApiService {
         return repo.findAll();
     }
 
+    @Scheduled(fixedRate=60000)
     public void checkApis(){
+        System.out.println("Scheduler Running...");
         List<ApiDetails> apis=repo.findAll();
 
         for(ApiDetails api:apis){
@@ -44,7 +48,11 @@ public class ApiService {
               System.out.println("Response Time For "+ api.getName()+" -> "+ responseTime+"ms");
               api.setResponseTime(responseTime);
               int statusCode=response.statusCode();
-                if(statusCode==200){
+               api.setStatusCode(statusCode);
+               
+               api.setLastChecked(LocalDateTime.now());
+
+                if(statusCode >= 200 && statusCode < 400){
                     api.setStatus("UP");
                 }else {
                   api.setStatus("DOWN");
@@ -59,4 +67,13 @@ public class ApiService {
             }
         }
     }
+
+    public ApiDetails updateApi(Long id, ApiDetails updatedApi){
+        ApiDetails api=repo.findById(id).orElseThrow(()-> new RuntimeException("Api not found by id: "+id));
+        api.setName(updatedApi.getName());
+        api.setUrl(updatedApi.getUrl());
+        return repo.save(api);
+    }
+
+
 }
